@@ -1,4 +1,6 @@
-package sample;
+package sample.notUsingRightNow;
+
+import sample.User;
 
 import java.util.Date;
 

@@ -1,4 +1,4 @@
-package sample;
+package sample.notUsingRightNow;
 
 /**
  * Created by sojer on 22.10.2017.

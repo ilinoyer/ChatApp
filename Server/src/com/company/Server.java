@@ -17,6 +17,8 @@ public class Server {
     private ServerSocket serverSocket;
     private ArrayList<Session> sessionList;
     private static int clientNumber = 0;
+    private String name = "";
+
 
     public Server() {
         this.sessionList = new ArrayList<Session>();
@@ -35,11 +37,10 @@ public class Server {
 
             DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
             DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
-
-            System.out.println("Creating a new handler for this client...");
+            System.out.println("Creating a new handler for this client... " );
 
             // Create a new handler object for handling this request.
-            Session newSession = new Session(socket,"client " + clientNumber, dataInputStream, dataOutputStream, this);
+            Session newSession = new Session(socket,name, dataInputStream, dataOutputStream, this);
 
             // Create a new Thread with this object.
             Thread sessionThread = new Thread(newSession);

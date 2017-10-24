@@ -3,6 +3,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 
@@ -38,6 +39,13 @@ public class Session implements Runnable{
     public void run() {
 
         String received;
+        try {
+            name = dataInputStream.readUTF();
+        }catch(IOException e)
+        {
+
+        }
+        System.out.println("Client connected: " + name);
         while (true)
         {
             try
@@ -55,8 +63,13 @@ public class Session implements Runnable{
 
                 // break the string into message and recipient part
                 StringTokenizer st = new StringTokenizer(received, "#");
-                String MsgToSend = st.nextToken();
-                String recipient = st.nextToken();
+                String MsgToSend = null;
+                String recipient  = null;
+                try {
+                    MsgToSend = st.nextToken();
+                    recipient = st.nextToken();
+                }catch(NoSuchElementException e)
+                {}
 
                 // search for the recipient in the connected devices list.
                 // ar is the vector storing client of active users
@@ -64,15 +77,23 @@ public class Session implements Runnable{
                 {
                     // if the recipient is found, write on its
                     // output stream
-                    if (server.getSessionByPosition(i).getName().equals(recipient) && server.getSessionByPosition(i).isloggedin==true)
+
+                    if(recipient == null && MsgToSend != null)
                     {
                         server.getSessionByPosition(i).dataOutputStream.writeUTF(this.name+" : "+MsgToSend);
-                        break;
                     }
-                }
-            } catch (IOException e) {
+                    else if(MsgToSend !=  null)
+                    {
+                        if (server.getSessionByPosition(i).getName().equals(recipient) && server.getSessionByPosition(i).isloggedin==true)
+                        {
+                            server.getSessionByPosition(i).dataOutputStream.writeUTF(this.name+" : "+MsgToSend);
+                            break;
+                        }
+                    }
 
-                e.printStackTrace();
+                }
+            } catch (Exception e) {
+
             }
 
         }
